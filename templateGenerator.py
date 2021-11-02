@@ -28,17 +28,18 @@ lines=[]
 for line in rawLines:
     if(line.__contains__("=")):
         line = line.split("=")
-    if (line[1].__contains__("\n")):
-        line[1] = line[1].split("\n")[0]
-    lines.append(line[0])
-    lines.append(line[1])
+        if (line[1].__contains__("\n")):
+            line[1] = line[1].split("\n")[0]
+            lines.append(line[0])
+            lines.append(line[1])
     print(line, end="\n")
 
 print(lines[1], end="\n")
 print(lines[3], end="\n")
 
 if(lines[0]=="template"):
-    doc = DocxTemplate(lines[1])
+    p=Path(__file__).with_name(lines[1])
+    doc = DocxTemplate(p)
     context = {"" : ""}
 
     for x in range(len(lines)-1):
@@ -51,7 +52,8 @@ if(lines[0]=="template"):
 
     doc.render(context)
     if(lines[2]=="outfile"):
-        doc.save(lines[3])
+        p=Path(__file__).with_name(lines[3])
+        doc.save(p)
     else:
         errors.update({"The input file\'s second line must be \"outfile=*filepath*\""})
 else:

@@ -3,36 +3,78 @@ from re import MULTILINE
 import tkinter as tk
 from tkinter import Canvas, Image, filedialog, Text
 from tkinter import scrolledtext
-global feedbackTextLabel, feedbackText
-feedbackText=""
+from tkinter.constants import E, LEFT, RIGHT, W
+global saveFileTextLabel, saveFileText
+saveFileText=""
 
-def DebugAddLog(log): 
-    feedbackTextLabel=feedbackTextL = tk.Label(pathFrame, text=feedbackText, fg="white", bg="#181818", border=5)
-    feedbackTextL.pack()
+#def DebugAddLog(log): 
+#    saveFileTextLabel=saveFileTextL = tk.Label(pathFrame, text=saveFileText, fg="white", bg="#181818", border=5)
+#    saveFileTextL.pack()
+
+def writeSaveFile(templatePath, outputePath, textBox, outFile):
+    text=textBox.get('1.0', tk.END)
+    print("EXPORTING FILE \n", templatePath, outputePath)
+    if(templatePath!="" and  outputePath!="" and text!=""):
+        # generate in file
+        filename = outFile+".in"
+        p=Path(__file__).with_name(filename)
+        f = open(p,"w")
+        if(templatePath.__contains__("=")):
+            aux = templatePath.split("=")
+            templatePath = aux[1]
+        #templatePath.replace("\n", "")
+        a=""
+        if(templatePath.__contains__(".")):
+            templatePath=templatePath.split(".")[0]
+        templatePath = "template="+templatePath.replace("\n","")+".docx\n"
+        print("templatePath", templatePath)
+        f.write(templatePath)
+
+        if(outputePath.__contains__("=")):
+            aux = outputePath.split("=")
+            outputePath = aux[1]
+        
+        outputePath.replace("\n", "")
+        #outputePathP.replace("\n", "")
+        if(outputePath.__contains__(".")):
+            outputePath=outputePath.split(".")[0]
+        outputePath = "outfile="+outputePath.replace("\n","")+".docx\n"
+        f.write(outputePath)
+        f.write(text)
+        f.close()
+        print("check "+outFile+".in")
 
 
 def writeFile(templatePath, outputePath, textBox):
     text=textBox.get('1.0', tk.END)
+    print("EXPORTING FILE \n", templatePath, outputePath)
     if(templatePath!="" and  outputePath!="" and text!=""):
         # generate in file
         filename = "data.in"
         p=Path(__file__).with_name(filename)
         f = open(p,"w")
-        a ={"a", "a"}
-        len(a)
         if(templatePath.__contains__("=")):
             aux = templatePath.split("=")
-            templatePath = aux[len(aux)-1]
+            templatePath = aux[1]
+        #templatePath.replace("\n", "")
+        a=""
         if(templatePath.__contains__(".")):
             templatePath=templatePath.split(".")[0]
-        f.write("template="+templatePath+".docx\n")
+        templatePath = "template="+templatePath.replace("\n","")+".docx\n"
+        print("templatePath", templatePath)
+        f.write(templatePath)
 
         if(outputePath.__contains__("=")):
             aux = outputePath.split("=")
-            outputePath = aux[len(aux)-1]
+            outputePath = aux[1]
+        
+        outputePath.replace("\n", "")
+        #outputePathP.replace("\n", "")
         if(outputePath.__contains__(".")):
             outputePath=outputePath.split(".")[0]
-        f.write("outfile="+outputePath+".docx\n")
+        outputePath = "outfile="+outputePath.replace("\n","")+".docx\n"
+
+        f.write(outputePath)
 
         f.write(text)
         #print(text)
@@ -50,16 +92,66 @@ def writeFile(templatePath, outputePath, textBox):
         if(f.readable()):
             try:
                 rawLines = f.readlines()
-                DebugAddLog(rawLines)
+                #DebugAddLog(rawLines)
             finally:
-                DebugAddLog("File successfully created!")
+                print("error")
+                #DebugAddLog("File successfully created!")
         f.close()
     else:
-        DebugAddLog("None of the values must be empty!")
         print("error")
+        #DebugAddLog("None of the values must be empty!")
+        
+
+def loadFile(outFile, pathTemplate):
+    filename = outFile+".in"
+    p=Path(__file__).with_name(filename)
+    f = open(p,"a")
+    f.close()
+    f = open(p,"r")
+    rawlines = f.readlines()
+    templatePathOld = ""
+    outputPathOld = ""
+    data = ""
+    try:
+        if(len(rawlines)>=1):
+            templatePathOld=rawlines[0].split("=")[1]
+            if(len(rawlines)>=2):
+                outputPathOld=rawlines[1].split("=")[1]
+                if(len(rawlines)>=3):
+                    data=rawlines
+                    data.remove(rawlines[0])
+                    data.remove(rawlines[0])
+                    print("Loaded data from\""+filename+"\"")
+                    print("Data imported: ", templatePathOld, outputPathOld, data)
+                    pathTemplate = tk.StringVar(root, value=templatePathOld)
+
+    except:
+        print("Error loading file \""+filename+"\"")
 
 
+# LOAD OLD DATA
+filename = "data.in"
+p=Path(__file__).with_name(filename)
+f = open(p,"a")
+f.close()
+f = open(p,"r")
+rawlines = f.readlines()
+templatePathOld = ""
+outputPathOld = ""
+data = ""
+try:
+    if(len(rawlines)>=1):
+        templatePathOld=rawlines[0].split("=")[1]
+        if(len(rawlines)>=2):
+            outputPathOld=rawlines[1].split("=")[1]
+            if(len(rawlines)>=3):
+                data=rawlines
+                data.remove(rawlines[0])
+                data.remove(rawlines[0])
+except:
+    print("NO PREVIOUS DATA FOUND")
 
+print("IMPORTING DATA", templatePathOld, outputPathOld, data)
 
 # INITIALIZE SECTION
 root = tk.Tk()
@@ -76,7 +168,7 @@ pathFrame = tk.Frame(root, bg="#181818")
 pathFrame.place(relwidth=1, relheight=0.2, rely=0.1, relx=0)
 
 # template path
-pathTemplate = tk.StringVar()
+pathTemplate = tk.StringVar(root, value=templatePathOld)
 
 pathTemplateTitle = tk.Label(pathFrame, text="Template Path", fg="white", bg="#181818", border=5)
 pathTemplateTitle.pack()
@@ -84,7 +176,7 @@ pathTemplateTextBox = tk.Entry(pathFrame, width=50, textvariable = pathTemplate,
 pathTemplateTextBox.pack()
 
 # output path
-pathOutput = tk.StringVar()
+pathOutput = tk.StringVar(root, value=outputPathOld)
 
 pathOutputLabel = tk.Label(pathFrame, text="Output Path", fg="white", bg="#181818", border=5)
 pathOutputLabel.pack()
@@ -100,8 +192,14 @@ textFrame.place(relwidth=1, relheight=0.4, rely=0.31, relx=0)
 
 textTitle = tk.Label(textFrame, text="Output Path", fg="white", bg="#181818", border=5)
 textTitle.pack()
-textTextBox = scrolledtext.ScrolledText(textFrame, bg="white", border=5, width=50, height=10)
+textTextBox = scrolledtext.ScrolledText(textFrame, bg="white", border=5, width=root.winfo_screenwidth(), height=10)
 textTextBox.pack()
+
+
+data.reverse()
+for dat in data:  
+    textTextBox.insert('1.0', dat)
+
 #print(textTextBox.get('1.0', tk.END))
 
 #print(textTextBox.get('1.0', tk.END))
@@ -110,17 +208,29 @@ textTextBox.pack()
 generationButton = tk.Button(textFrame, text="Generate!", fg="white", bg="#181818", border=5, command=lambda: writeFile(pathTemplate.get(), pathOutput.get(), textTextBox))
 generationButton.pack()
 
-# FEEDBACK SECTION
-feedbackFrame = tk.Frame(root, bg="#181818")
-feedbackFrame.place(relwidth=1, relheight=0.2, rely=0.72, relx=0)
-
-feedbackText=""
-feedbackTitle = tk.Label(feedbackFrame, text="Debug Log:", fg="white", bg="#181818", border=5)
-feedbackTitle.pack()
-feedbackTextLabel = tk.Label(feedbackFrame, text=feedbackText, fg="white", bg="#181818", border=5)
-feedbackTextLabel.pack()
 
 
+# SAVE DATA SECTION
+#writeSaveFile
+slFileFrame = tk.Frame(root, bg="#181818")
+slFileFrame.place(relwidth=1, relheight=0.2, rely=0.72, relx=0)
+
+slFileName = "default"
+
+slFileTitle = tk.Label(slFileFrame, text="SAVE/LOAD", fg="white", bg="#181818", border=5)
+slFileTitle.pack()
+
+slTextBox = tk.Entry(slFileFrame, textvariable=slFileName,
+fg="white", bg="#181818", border=5)
+slTextBox.pack()
+
+slSaveButton= tk.Button(slFileFrame, text="Save", fg="white", bg="#181818", border=5,
+command=lambda: writeSaveFile(pathTemplate.get(), pathOutput.get(), textTextBox, slTextBox.get()))
+slSaveButton.pack()
+
+slLoadButton= tk.Button(slFileFrame, text="Load", fg="white", bg="#181818", border=5,
+command=lambda: loadFile(slTextBox.get(), pathTemplate))
+slLoadButton.pack()
 
 
 
