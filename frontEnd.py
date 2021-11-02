@@ -1,3 +1,4 @@
+from os import error
 from pathlib import Path
 from re import MULTILINE
 import tkinter as tk
@@ -10,6 +11,16 @@ saveFileText=""
 #def DebugAddLog(log): 
 #    saveFileTextLabel=saveFileTextL = tk.Label(pathFrame, text=saveFileText, fg="white", bg="#181818", border=5)
 #    saveFileTextL.pack()
+
+#pathTemplate.set("a")
+#pathOutput.set("a")
+def RefreshData(pathTemplate, textTemplate, pathOutput, textOutput, textTextBox, data):
+    pathTemplate.set(textTemplate)
+    pathOutput.set(textOutput)
+    textTextBox.delete('1.0', tk.END)
+    data.reverse()
+    for dat in data:  
+        textTextBox.insert('1.0', dat)
 
 def writeSaveFile(templatePath, outputePath, textBox, outFile):
     text=textBox.get('1.0', tk.END)
@@ -101,17 +112,17 @@ def writeFile(templatePath, outputePath, textBox):
         print("error")
         #DebugAddLog("None of the values must be empty!")
         
-
-def loadFile(outFile, pathTemplate):
+global templatePathOld, outputPathOld, data
+def loadFile(outFile, pathTemplate, outputTemplate, dataText):
     filename = outFile+".in"
     p=Path(__file__).with_name(filename)
     f = open(p,"a")
     f.close()
     f = open(p,"r")
     rawlines = f.readlines()
-    templatePathOld = ""
-    outputPathOld = ""
-    data = ""
+    #templatePathOld = ""
+    #outputPathOld = ""
+    #data = ""
     try:
         if(len(rawlines)>=1):
             templatePathOld=rawlines[0].split("=")[1]
@@ -121,12 +132,11 @@ def loadFile(outFile, pathTemplate):
                     data=rawlines
                     data.remove(rawlines[0])
                     data.remove(rawlines[0])
+                    RefreshData(pathTemplate, templatePathOld, outputTemplate, outputPathOld, dataText, data)
                     print("Loaded data from\""+filename+"\"")
-                    print("Data imported: ", templatePathOld, outputPathOld, data)
-                    pathTemplate = tk.StringVar(root, value=templatePathOld)
-
-    except:
-        print("Error loading file \""+filename+"\"")
+                    print("Data SUCCESFULLY imported: ", templatePathOld, outputPathOld, data)
+    except error:
+        print("Error loading file \""+filename+"\" \n"+error.strerror)
 
 
 # LOAD OLD DATA
@@ -153,6 +163,7 @@ except:
 
 print("IMPORTING DATA", templatePathOld, outputPathOld, data)
 
+
 # INITIALIZE SECTION
 root = tk.Tk()
 canvas = tk.Canvas(root, height=700, width=1000, bg="gray")
@@ -160,15 +171,17 @@ canvas.pack()
 frame = tk.Frame(root, bg="black")
 frame.place(relwidth=1, relheight=1, relx=0, rely=0)
 # TITLE SECTION
-titleLabel = tk.Label(frame, text="Youtube Research", fg="white", bg="black", height=1, )
+titleLabel = tk.Label(frame, text="Youtube Research", fg="white", bg="black", height=1)
 titleLabel.pack()
 
 # PATH SECTION
+
 pathFrame = tk.Frame(root, bg="#181818")
 pathFrame.place(relwidth=1, relheight=0.2, rely=0.1, relx=0)
 
 # template path
 pathTemplate = tk.StringVar(root, value=templatePathOld)
+
 
 pathTemplateTitle = tk.Label(pathFrame, text="Template Path", fg="white", bg="#181818", border=5)
 pathTemplateTitle.pack()
@@ -195,7 +208,7 @@ textTitle.pack()
 textTextBox = scrolledtext.ScrolledText(textFrame, bg="white", border=5, width=root.winfo_screenwidth(), height=10)
 textTextBox.pack()
 
-
+textTextBox.delete('1.0', tk.END)
 data.reverse()
 for dat in data:  
     textTextBox.insert('1.0', dat)
@@ -207,6 +220,8 @@ for dat in data:
 
 generationButton = tk.Button(textFrame, text="Generate!", fg="white", bg="#181818", border=5, command=lambda: writeFile(pathTemplate.get(), pathOutput.get(), textTextBox))
 generationButton.pack()
+
+
 
 
 
@@ -229,7 +244,7 @@ command=lambda: writeSaveFile(pathTemplate.get(), pathOutput.get(), textTextBox,
 slSaveButton.pack()
 
 slLoadButton= tk.Button(slFileFrame, text="Load", fg="white", bg="#181818", border=5,
-command=lambda: loadFile(slTextBox.get(), pathTemplate))
+command=lambda: loadFile(slTextBox.get(), pathTemplate, pathOutput, textTextBox))
 slLoadButton.pack()
 
 
