@@ -1,8 +1,13 @@
-template=RaportProiect.docx
-outfile=RaportProiectDa.docx
-titlu=Serie videouri cum sa nu x
-descriere=Propunerea mea de a face un videoclip despre cum sa nu fi un lider in care e bagat si modusul a fost primita cu reticenta. Prima oara am sugerat sa facem o serie de clipuri despre lidership dar am primit 2 reactii negative si doar una pozitiva. 2v2. Am decis sa o las moarta cu subiectul modus pe moment si sa ma focuses pe un subiect independent. Ce urmeaza acum e sa fac o lista cu posibile subiecte si un scurt reseach la fiecare. 
-data=2/11/2021
+template=template.docx
+outfile=templateSave.docx
+titlu=Job Router
+descriere=M-am bagat in vara intr-un proiect despre cum sa folosesc jobrouter. Tutorialele sunt multe si cu probleme, asa ca in mare nu am avut niciodata chef sa lucrez, dar mi-am propus sa rup din mine si sa termin proiectul asta odata pentru totdeauna
+categorie=Proiect extern, Personal
+scop=Terminarea tuturor tutorialelor de pe jobrouter
+obiective=Sa termin toate tutorialele de pe jobrouter si sa iau o nota cat mai mare la teste.
+data_incepere=14/11/2021
+data_finalizare=01/12/2021
+
 
 
 
