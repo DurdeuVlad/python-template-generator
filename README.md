@@ -1,2 +1,63 @@
-<h1>Project Name: Python Template Generator</h1><h2>Description</h2><p>Python Template Generator is a desktop application that allows users to generate customized templates using variable fields. The application has a front-end interface that enables users to input values for the variables and select template and output file paths. The back-end logic processes the data and generates a new file based on the template and variables provided.</p><p>The Python Template Generator project consists of two Python source files: frontEnd.py and templateGenerator.py. The frontEnd.py file contains the front-end interface and handles user input, while the templateGenerator.py file contains the back-end logic for processing the data and generating the new file.</p><p>To use the application, the user must provide a docx file with variable fields in the project folder and run frontEnd.py. In frontEnd.py, the user must complete the variable fields with variable_name=variable_value for each variable. The application can save and load templates for ease of use.</p><h2>Dependencies</h2><p>The Python Template Generator project has the following dependencies:</p><ul><li>Python 3.x</li><li>tkinter</li><li>python-docx</li></ul><h2>How to Use</h2><ol><li>Clone the repository to your local machine.</li><li>Ensure that Python 3.x and the necessary dependencies are installed.</li><li>Place a docx file with variable fields in the project folder.</li><li>Open frontEnd.py in Visual Studio Code or another Python IDE.</li><li>Complete the variable fields in frontEnd.py with the desired values.</li><li>Run frontEnd.py.</li><li>Select a template and output file path in the application.</li><li>Click "Generate" to create the new file.</li></ol><p>The application also has a "Save" button that allows users to save their template settings and load them later for ease of use.</p><h2>Contributors</h2><ul><li><a href="https://github.com/DurdeuVlad" target="_new">Durdeu Vlad</a> - Creator and Maintainer</li></ul><h2>License</h2><p>This project is licensed under the <a href="https://opensource.org/licenses/MIT" target="_new">MIT License</a>.</p></div>
- 
+# Python Template Generator
+
+## Introduction
+
+This project is a Python desktop app that lets you generate customized Word documents automatically. Instead of manually editing a template every time you need a new file, you input the variables once and the app handles the rest.
+
+It has a simple front-end where you can fill in your data, pick your template, and set your output path. Behind the scenes, it plugs everything into a .docx file and generates a clean final document.
+
+Built it to save time when dealing with repetitive document creation.
+
+## What It Does
+
+Simple GUI for entering variable values  
+Selects template and output file location  
+Replaces variables in the .docx template  
+Saves a ready-to-use Word document  
+Supports saving and loading template settings for reusability
+
+## Requirements
+
+Python 3.x  
+tkinter (comes with Python)  
+python-docx
+
+## File Structure
+
+- `frontEnd.py`: GUI for input and interaction
+- `templateGenerator.py`: handles template logic and document generation
+- `template.docx`: sample template with variable fields
+- `RaportProiect.docx`: project documentation
+
+## How to Use
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/DurdeuVlad/python-template-generator.git
+cd python-template-generator
+```
+
+### 2. Install dependencies
+
+```bash
+pip install python-docx
+```
+
+### 3. Prepare your template
+
+Put your `.docx` template file into the project folder. It should have variable placeholders.
+
+### 4. Launch the app
+
+```bash
+python frontEnd.py
+```
+
+### 5. Fill out variables
+
+Fill in all the required fields. Pick your template and choose where you want to save the output.
+
+### 6. Generate
+
+Click "Generate" and the app will create your customized document.
